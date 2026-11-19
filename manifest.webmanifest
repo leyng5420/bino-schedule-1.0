@@ -1,7 +1,7 @@
 {
   "name": "bino schedule",
   "short_name": "BINO",
-  "description": "Lịch cá nhân: học, công việc, gym và thời gian riêng",
+  "description": "Lịch cá nhân của Cún, có Miu làm quân sư thư ký",
   "lang": "vi",
   "start_url": "./",
   "scope": "./",

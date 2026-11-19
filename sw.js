@@ -1,6 +1,7 @@
-// Cho phép mở lịch khi mất mạng. Luôn lấy bản mới nhất khi có mạng.
-const CACHE = 'bino-schedule-v1';
-const FILES = ['./', './index.html', './style.css', './app.js', './schedule.js', './manifest.webmanifest', './icon-192.png'];
+// bino schedule 1.0: cho phép mở lịch khi mất mạng, luôn lấy bản mới nhất khi có mạng
+const CACHE = 'bino-schedule-1.0';
+const FILES = ['./', './index.html', './style.css', './core.js', './theme.js', './weather.js', './miu.js', './app.js',
+  './changelog.js', './schedule.js', './manifest.webmanifest', './icon-192.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));

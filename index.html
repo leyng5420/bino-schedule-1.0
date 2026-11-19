@@ -1,42 +1,42 @@
 <!doctype html>
-<html lang="vi">
+<html lang="vi" data-mode="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#141315">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="BINO">
   <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="BINO">
+  <title>bino schedule</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <title>bino schedule</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%23141315'/><circle cx='26' cy='34' r='14' fill='%23D8DD80'/><circle cx='40' cy='28' r='12' fill='%23DA95AA'/></svg>">
+  <link rel="icon" href="icon-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body data-view="day">
+<body data-view="ngay">
+  <div id="bgLayer" aria-hidden="true"></div>
+  <div id="splash" class="splash" role="dialog" aria-label="Màn chào" tabindex="0" hidden></div>
+
   <header class="top">
     <div class="brandrow">
       <p class="wordmark"><span class="w1">bino</span><span class="w2">schedule</span></p>
-      <div class="viewtoggle" role="group" aria-label="Chế độ xem">
-        <button id="viewDay" aria-pressed="true">Ngày</button>
-        <button id="viewWeek" aria-pressed="false">Tuần</button>
-      </div>
       <button id="menuBtn" class="iconbtn" aria-label="Tùy chọn khác">&#8943;</button>
     </div>
     <div class="titlerow">
       <div>
-        <h1 id="monthLabel">Tháng</h1>
-        <p class="sub" id="weekSub"></p>
+        <h1 id="title">Tháng</h1>
+        <p class="sub" id="sub"></p>
       </div>
       <div class="nav">
-        <button id="prev" class="iconbtn" aria-label="Tuần trước">&#8249;</button>
+        <button id="prev" class="iconbtn" aria-label="Trước">&#8249;</button>
         <button id="today" class="pill">Hôm nay</button>
-        <button id="next" class="iconbtn" aria-label="Tuần sau">&#8250;</button>
+        <button id="next" class="iconbtn" aria-label="Sau">&#8250;</button>
       </div>
     </div>
+    <div class="viewseg" id="viewSeg" role="group" aria-label="Chế độ xem"></div>
     <div class="hours" aria-live="polite">
       <p><span class="hnum" id="heroDone">0h</span><span class="hplan" id="heroPlan"></span></p>
       <div class="htrack"><div class="hfill" id="heroFill"></div></div>
@@ -48,33 +48,52 @@
   <main id="board"></main>
   <section class="summary" id="summary" aria-label="Tổng kết tuần"></section>
 
-  <button id="fab" class="fab" aria-label="Thêm lịch hoặc việc cần làm">+</button>
+  <div class="fabs">
+    <button id="eyeBtn" class="fab2" aria-label="Xem khung giờ trống">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="12" r="3.2" fill="currentColor"/></svg>
+    </button>
+    <button id="fab" class="fab" aria-label="Thêm lịch hoặc việc cần làm">+</button>
+  </div>
+
+  <div id="miu" class="miu" hidden>
+    <div class="miu-bub" role="status" aria-live="polite">
+      <p id="miuText"></p>
+      <button id="miuShoo" hidden>Con mèo này cút đi</button>
+    </div>
+    <button id="miuCat" class="miu-cat" aria-label="Miu. Chạm để trả lời"></button>
+  </div>
 
   <dialog id="dlg" class="sheet" aria-labelledby="dlgTitle"><div class="sheet-body" id="dlgBody"></div></dialog>
 
   <dialog id="menu" class="sheet" aria-labelledby="menuTitle">
     <div class="sheet-body">
       <div class="grabber" aria-hidden="true"></div>
-      <div class="sh-head plain">
-        <h2 id="menuTitle">Tùy chọn</h2>
-        <button class="close" data-mclose aria-label="Đóng">&times;</button>
-      </div>
-      <div class="seg" role="group" aria-label="Chế độ xem">
-        <button data-mview="day" aria-pressed="true">Xem theo ngày</button>
-        <button data-mview="week" aria-pressed="false">Xem cả tuần</button>
-      </div>
-      <button class="menuitem" id="btnIcs">Tải lịch .ics<span>8 tuần tới, nhắc trước 15 phút</span></button>
-      <button class="menuitem" id="btnBackup">Sao lưu dữ liệu<span>Tick, ghi chú và lịch bạn tự thêm</span></button>
-      <button class="menuitem" id="btnRestore">Khôi phục từ file sao lưu<span>Dùng khi đổi điện thoại hoặc trình duyệt</span></button>
-      <input type="file" id="restoreFile" accept="application/json,.json" hidden>
-      <p class="fine">Tick, ghi chú và lịch tự thêm đang được lưu trên thiết bị này.</p>
+      <div class="sh-head plain"><h2 id="menuTitle">Tùy chọn</h2><button class="close" data-mclose aria-label="Đóng">&times;</button></div>
+      <button class="menuitem" data-menu="calendars">Các lịch<span>Tạo lịch mới, đổi màu, kiểu tô và thứ tự ưu tiên</span></button>
+      <button class="menuitem" data-menu="theme">Giao diện<span>Chế độ sáng tối, chủ đề màu, hình nền, viền thẻ</span></button>
+      <button class="menuitem" data-menu="settings">Miu và cài đặt<span>Tên gọi, tần suất Miu, câu nhắc, câu chúc, khung giờ trống</span></button>
+      <button class="menuitem" data-menu="whatsnew">Có gì mới<span>Miu giới thiệu các bản cập nhật</span></button>
+      <button class="menuitem" data-menu="ics">Tải lịch .ics<span>8 tuần tới, nhắc trước 15 phút trên lịch điện thoại</span></button>
+      <button class="menuitem" data-menu="backup">Sao lưu dữ liệu<span>Lịch, tick, ghi chú, cài đặt và ảnh</span></button>
+      <button class="menuitem" data-menu="restore">Khôi phục từ file sao lưu<span>Dùng khi đổi điện thoại hoặc trình duyệt</span></button>
+      <button class="menuitem" data-menu="reseed">Nạp lại lịch gốc<span>Dùng khi bạn đã sửa file schedule.js trên GitHub</span></button>
+      <p class="fine" id="version"></p>
     </div>
   </dialog>
 
+  <dialog id="tour" class="sheet tour" aria-labelledby="tourTitle"><div class="sheet-body" id="tourBody"></div></dialog>
+
   <div class="ghost" id="ghost" aria-hidden="true"></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <input type="file" id="restoreFile" accept="application/json,.json" hidden>
+  <input type="file" id="imgFile" accept="image/*" hidden>
 
   <script src="schedule.js"></script>
+  <script src="changelog.js"></script>
+  <script src="core.js"></script>
+  <script src="theme.js"></script>
+  <script src="weather.js"></script>
+  <script src="miu.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
